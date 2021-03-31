@@ -1,34 +1,51 @@
+const canvas = document.getElementById("hangman");
+
 class HangmanCanvas {
-  constructor(secretWord) {
-    this.context = document.getElementById('hangman').getContext('2d');
-    // ... your code goes here
-  }
+	constructor(secretWord) {
+		this.context = canvas.getContext("2d");
+		this.secretWord = secretWord;
+	}
 
-  createBoard() {
-    // ... your code goes here
-  }
+	createBoard() {
+		this.context.clearRect(0, 0, canvas.width, canvas.height);
+    this.context.lineWidth = 5;
 
-  drawLines() {
-    // ... your code goes here
-  }
+		this.drawLines();
+	}
 
-  writeCorrectLetter(index) {
-    // ... your code goes here
-  }
+	drawLines() {
+		let initialX = 300;
+		let initialY = 700;
 
-  writeWrongLetter(letter, errorsLeft) {
-    // ... your code goes here
-  }
+    this.context.beginPath();
+		for (let i = 0; i < this.secretWord.length; i++) {
+			this.context.moveTo(initialX, initialY);
+			initialX += 45;
+			this.context.lineTo(initialX, initialY);
+			initialX += 15;
+			this.context.moveTo(initialX, initialY);
+		}
+    this.context.closePath();
+    this.context.stroke();
+	}
 
-  drawHangman(errorsLeft) {
-    // ... your code goes here
-  }
+	writeCorrectLetter(index) {
+		// ... your code goes here
+	}
 
-  gameOver() {
-    // ... your code goes here
-  }
+	writeWrongLetter(letter, errorsLeft) {
+		// ... your code goes here
+	}
 
-  winner() {
-    // ... your code goes here
-  }
+	drawHangman(errorsLeft) {
+		// ... your code goes here
+	}
+
+	gameOver() {
+		// ... your code goes here
+	}
+
+	winner() {
+		// ... your code goes here
+	}
 }

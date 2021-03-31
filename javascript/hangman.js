@@ -15,7 +15,7 @@ class Hangman {
 		return keyCode >= 65 && keyCode <= 90 ? true : false;
 	}
 
-	//¿La puedo meter?
+	//True if I can add the letter (letters array doesn't includes it)
 	checkClickedLetters(letter) {
 		return !this.letters.includes(letter);
 	}
@@ -37,12 +37,12 @@ class Hangman {
 
 	checkWinner() {
 		let output = true;
-		this.secretWord.split("").forEach((letter) => {
+		for (let letter of this.secretWord) {
 			if (!this.guessedLetters.includes(letter)) {
 				output = false;
-        return output;
+				return output;
 			}
-		});
+		}
 		return output;
 	}
 }
@@ -55,9 +55,10 @@ if (startGameButton) {
 	startGameButton.addEventListener("click", (event) => {
 		hangman = new Hangman(["node", "javascript", "react", "miami", "paris", "amsterdam", "lisboa"]);
 
-		// HINT (uncomment when start working on the canvas portion of the lab)
-		// hangman.secretWord = hangman.pickWord();
-		// hangmanCanvas = new HangmanCanvas(hangman.secretWord);
+		hangman.secretWord = hangman.pickWord();
+		hangmanCanvas = new HangmanCanvas(hangman.secretWord);
+
+		hangmanCanvas.createBoard();
 
 		// ... your code goes here
 	});
@@ -65,5 +66,26 @@ if (startGameButton) {
 
 document.addEventListener("keydown", (event) => {
 	// React to user pressing a key
+	let keyPressed = event.keyCode;
+
+	//It's a letter?
+	if (hangman.checkIfLetter(keyPressed)) {
+		//While game is alive
+		while (hangman.checkWinner() === false) {
+			//The secretWord has the letter?
+			if (hangman.secretWord.includes(keyPressed)) {
+				//Can I add the letter to the array?
+				if (hangman.checkClickedLetters(letters)) {
+					//Add the letter to correct letters array
+					hangman.addCorrectLetter(letter);
+				}
+			} else {
+				//Add the letter to wrong letters array
+				hangman.addWrongLetter(letter);
+			}
+			hangman.checkGameOver();
+		}
+	}
+
 	// ... your code goes here
 });
