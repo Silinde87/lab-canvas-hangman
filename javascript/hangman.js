@@ -21,7 +21,9 @@ class Hangman {
 	}
 
 	addCorrectLetter(letter) {
-		this.guessedLetters += letter;
+		if(this.guessedLetters.includes(letter) === false){
+			this.guessedLetters += letter;
+		}
 	}
 
 	addWrongLetter(letter) {
@@ -48,14 +50,15 @@ class Hangman {
 }
 
 let hangman;
+let hangmanCanvas;
 
 const startGameButton = document.getElementById("start-game-button");
 
 if (startGameButton) {
 	startGameButton.addEventListener("click", (event) => {
 		hangman = new Hangman(["node", "javascript", "react", "miami", "paris", "amsterdam", "lisboa"]);
+		hangman.secretWord = hangman.secretWord.toUpperCase();
 
-		hangman.secretWord = hangman.pickWord();
 		hangmanCanvas = new HangmanCanvas(hangman.secretWord);
 
 		hangmanCanvas.createBoard();
@@ -65,27 +68,43 @@ if (startGameButton) {
 }
 
 document.addEventListener("keydown", (event) => {
-	// React to user pressing a key
+	// Getting keyCode and letter pressed
 	let keyPressed = event.keyCode;
+	let letter = event.key.toLocaleUpperCase();
 
 	//It's a letter?
 	if (hangman.checkIfLetter(keyPressed)) {
-		//While game is alive
-		while (hangman.checkWinner() === false) {
+		//If game is alive
+		if (hangman.checkWinner() === false) {
 			//The secretWord has the letter?
-			if (hangman.secretWord.includes(keyPressed)) {
-				//Can I add the letter to the array?
-				if (hangman.checkClickedLetters(letters)) {
-					//Add the letter to correct letters array
-					hangman.addCorrectLetter(letter);
-				}
+			if (hangman.secretWord.includes(letter)) {
+				//Add the letter to correct letters array
+				hangman.addCorrectLetter(letter);
+
+				//Print correct letter at canvas
+				hangman.secretWord.split('').map((le,index) =>{
+					if(le === letter){
+						hangmanCanvas.writeCorrectLetter(index);
+					}
+				})
+
 			} else {
 				//Add the letter to wrong letters array
 				hangman.addWrongLetter(letter);
+				
+				//Print wrong letter at canvas
+				hangmanCanvas.writeWrongLetter(letter, this.errorsLeft);
+				//Print hangman
+				hangmanCanvas.drawHangman(this.errorsLeft);
+				
+				if (hangman.checkGameOver()) {
+					//todo Bonus LOST
+					//hangmanCanvas.gameOver();
+				}
 			}
-			hangman.checkGameOver();
+		} else {
+			//todo Bonus WINNER
+			//hangmanCanvas.winner();
 		}
 	}
-
-	// ... your code goes here
 });
